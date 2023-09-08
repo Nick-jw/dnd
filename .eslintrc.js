@@ -31,6 +31,7 @@ module.exports = {
       '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/camelcase': 'off',
       'react/react-in-jsx-scope': 'off',
+      'react/button-has-type': 'off',
       'linebreak-style': 'off',
       '@typescript-eslint/typedef': ['warn', {
         "arrowParameter": false,
