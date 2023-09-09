@@ -18,18 +18,20 @@ class MonsterManager {
 
   // Subscribe to MonsterManager list updates
   public subscribe(listener: Listener): void {
+    // eslint-disable-next-line no-console
+    console.log('[MonsterManager] Adding listener: ', listener.name);
     this.listeners.push(listener);
-    console.log('listener added', listener);
   }
 
   // Unsubscribe
   public unsubscribe(listener: Listener): void {
+    // eslint-disable-next-line no-console
+    console.log('[MonsterManager] Removing listener: ', listener.name);
     this.listeners = this.listeners.filter((l) => l !== listener);
   }
 
   // Notify listeners of Monster list changes
   private notifyListeners(): void {
-    console.log('notifying listeners', this.listeners);
     for (const listener of this.listeners) {
       listener([...this.monsters]);
     }
@@ -49,7 +51,6 @@ class MonsterManager {
   public addMonster(params: MonsterParams): void {
     const monster: Monster = new Monster(params);
     this.monsters.push(monster);
-    console.log('monster added', monster);
     this.notifyListeners();
   }
 
@@ -78,6 +79,7 @@ class MonsterManager {
   public loadFromBrowserStorage(): boolean {
     const data: string | null = localStorage.getItem('monsters');
     if (data) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const parsedData: any = JSON.parse(data);
       try {
         const monsters: Monster[] = parsedData.map(
@@ -86,7 +88,7 @@ class MonsterManager {
         this.monsters = monsters;
       } catch (err) {
         // eslint-disable-next-line no-console
-        console.warn('Error loading monsters: Invalid data');
+        console.warn('[MonsterManager] Error loading from local storage');
         return false;
       }
       this.notifyListeners();
@@ -95,10 +97,28 @@ class MonsterManager {
     return false;
   }
 
-  public setMonsterHealth(name: string, health: number): void {
-    const monster = this.monsters.find((m) => m.name === name);
+  public clearAllMonsters(): void {
+    this.monsters = [];
+    this.notifyListeners();
+  }
+
+  public applyHealthDelta(
+    name: string,
+    health: number,
+    type: 'heal' | 'damage',
+  ): void {
+    const monster = this.getMonster(name);
     if (monster) {
-      monster.setHealth(health);
+      const newHealth =
+        type === 'heal' ? monster.health + health : monster.health - health;
+      if (newHealth <= 0) {
+        monster.health = 0;
+        monster.dead = true;
+      } else if (newHealth >= monster.maxHealth) {
+        monster.health = monster.maxHealth;
+      } else {
+        monster.health = newHealth;
+      }
       this.notifyListeners();
     }
   }

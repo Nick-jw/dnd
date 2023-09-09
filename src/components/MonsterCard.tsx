@@ -1,4 +1,3 @@
-import { RefObject } from 'react';
 import {
   Card,
   CardContent,
@@ -8,20 +7,49 @@ import {
   Button,
   CardMedia,
 } from '@mui/material';
-import MonsterManager from '../repository/MonsterManager';
+import { green, grey } from '@mui/material/colors';
+import React, { useState } from 'react';
+import { useMonsterManager } from '../context/MonsterManagerContext';
 import '../styles/MonsterCard.css';
 
 interface MonsterCardProps {
   name: string;
-  monsterManagerRef: RefObject<MonsterManager | null>;
 }
 
 const MonsterCard = (props: MonsterCardProps): JSX.Element => {
-  const { name, monsterManagerRef } = props;
-  const health = monsterManagerRef.current?.getMonster(name)?.health || 0;
-  const maxHealth = monsterManagerRef.current?.getMonster(name)?.maxHealth || 0;
-  const conditions =
-    monsterManagerRef.current?.getMonster(name)?.conditions || [];
+  const { name } = props;
+  const monsterManager = useMonsterManager();
+  const [healthInput, setHealthInput] = useState<number | null>(null);
+
+  const health = monsterManager.getMonster(name)?.health || 0;
+  const maxHealth = monsterManager.getMonster(name)?.maxHealth || 0;
+  const conditions = monsterManager.getMonster(name)?.conditions || [];
+
+  const handleHealthInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ): void => {
+    const value = parseInt(event.target.value, 10);
+    setHealthInput(value);
+  };
+
+  const handleHealButton = (): void => {
+    if (healthInput !== null) {
+      monsterManager?.applyHealthDelta(name, healthInput, 'heal');
+      setHealthInput(null);
+    }
+  };
+
+  const handleDamageButton = (): void => {
+    if (healthInput !== null) {
+      monsterManager?.applyHealthDelta(name, healthInput, 'damage');
+      setHealthInput(null);
+    }
+  };
+
+  const handleKillButton = (): void => {
+    monsterManager?.applyHealthDelta(name, Number.MAX_VALUE, 'damage');
+    setHealthInput(null);
+  };
 
   return (
     <Card sx={{ marginBottom: '1rem', width: '100%' }}>
@@ -63,7 +91,8 @@ const MonsterCard = (props: MonsterCardProps): JSX.Element => {
               <Button
                 variant="outlined"
                 size="small"
-                sx={{ width: '70px', color: 'green' }}
+                onClick={handleHealButton}
+                sx={{ width: '70px', color: green.A700 }}
                 className="health-button"
               >
                 Heal
@@ -71,7 +100,7 @@ const MonsterCard = (props: MonsterCardProps): JSX.Element => {
               <Button
                 variant="outlined"
                 size="small"
-                sx={{ width: 64, color: 'green' }}
+                sx={{ width: 64, color: green.A700 }}
                 className="health-button"
               >
                 Temp
@@ -81,6 +110,8 @@ const MonsterCard = (props: MonsterCardProps): JSX.Element => {
               type="number"
               variant="outlined"
               placeholder="0"
+              onChange={handleHealthInputChange}
+              value={healthInput !== null ? healthInput : ''}
               size="small"
               className="monster-input"
               sx={{
@@ -94,6 +125,7 @@ const MonsterCard = (props: MonsterCardProps): JSX.Element => {
                 variant="outlined"
                 size="small"
                 sx={{ width: '70px', color: 'red' }}
+                onClick={handleDamageButton}
                 className="health-button"
               >
                 Damage
@@ -101,7 +133,8 @@ const MonsterCard = (props: MonsterCardProps): JSX.Element => {
               <Button
                 variant="outlined"
                 size="small"
-                sx={{ width: 64, color: 'red' }}
+                sx={{ width: 64, color: grey[600] }}
+                onClick={handleKillButton}
                 className="health-button"
               >
                 Kill

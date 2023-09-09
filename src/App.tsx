@@ -6,13 +6,18 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import { MonsterManagerProvider } from './context/MonsterManagerContext';
 
 function App(): JSX.Element {
   return (
-    <div className="App">
-      <Header />
-      <Main />
-    </div>
+    <React.StrictMode>
+      <MonsterManagerProvider>
+        <div className="App">
+          <Header />
+          <Main />
+        </div>
+      </MonsterManagerProvider>
+    </React.StrictMode>
   );
 }
 

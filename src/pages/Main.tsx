@@ -1,36 +1,35 @@
 import { Typography, TextField, Button, Container, Grid } from '@mui/material';
-import { useState, useEffect, useRef } from 'react';
-import MonsterManager from '../repository/MonsterManager';
+import { useState, useEffect } from 'react';
+import { useMonsterManager } from '../context/MonsterManagerContext';
 import Monster from '../repository/Monster';
 import MonsterCard from '../components/MonsterCard';
 import '../styles/Main.css';
 
 const Main = (): JSX.Element => {
+  const monsterManager = useMonsterManager();
   const [monsters, setMonsters] = useState<Monster[]>([]);
   const [name, setName] = useState<string>('');
   const [health, setHealth] = useState<number | string>(0);
-  const monsterManagerRef = useRef<MonsterManager | null>(null);
 
   useEffect(() => {
-    if (!monsterManagerRef.current) {
-      monsterManagerRef.current = MonsterManager.getInstance();
-      if (monsterManagerRef.current) {
-        monsterManagerRef.current.subscribe(setMonsters);
-        monsterManagerRef.current.addMonster({ name: 'Dragon', health: 100 });
-        monsterManagerRef.current.addMonster({ name: 'Goblin', health: 30 });
-      }
+    if (monsterManager) {
+      monsterManager.subscribe(setMonsters);
+      monsterManager.addMonster({ name: 'Dragon', health: 100 });
+      monsterManager.addMonster({ name: 'Goblin', health: 30 });
+      monsterManager.addMonster({ name: 'Orc', health: 50 });
     }
 
     return () => {
-      if (monsterManagerRef.current) {
-        monsterManagerRef.current.unsubscribe(setMonsters);
+      if (monsterManager) {
+        monsterManager.unsubscribe(setMonsters);
+        monsterManager.clearAllMonsters();
       }
     };
-  }, []);
+  }, [monsterManager]);
 
   const addMonster = () => {
-    if (monsterManagerRef.current && typeof health === 'number') {
-      monsterManagerRef.current.addMonster({ name, health });
+    if (monsterManager && typeof health === 'number') {
+      monsterManager.addMonster({ name, health });
     }
     setName('');
     setHealth(0);
@@ -57,10 +56,7 @@ const Main = (): JSX.Element => {
             className="grid-item"
             sx={{ display: 'flex', justifyContent: 'flex-start' }}
           >
-            <MonsterCard
-              name={monster.name}
-              monsterManagerRef={monsterManagerRef}
-            />
+            <MonsterCard name={monster.name} />
           </Grid>
         ))}
       </Grid>
