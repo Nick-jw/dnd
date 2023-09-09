@@ -1,0 +1,47 @@
+/* Remove increment and decrement arrows for the number input */
+.monster-input input::-webkit-outer-spin-button,
+.monster-input input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+.monster-input input {
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  appearance: textfield;
+  text-align: center;
+}
+
+.monster-image {
+  object-fit: cover;
+  height: 100px;
+  width: 100px;
+  box-sizing: border-box;
+}
+
+.monster-container {
+  display: flex;
+  align-items: center;
+}
+
+.monster-image-grid {
+  padding: 0px;
+  max-width: 100px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.monster-card-content {
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+}
+
+.health-button:first-child {
+  margin-right: 2px;
+}
+
+.health-button:last-child {
+  margin-left: 2px;
+}

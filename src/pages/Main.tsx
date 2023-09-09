@@ -1,15 +1,9 @@
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Container,
-  List,
-  ListItem,
-} from '@mui/material';
-import React, { useState, useEffect, useRef } from 'react';
+import { Typography, TextField, Button, Container, Grid } from '@mui/material';
+import { useState, useEffect, useRef } from 'react';
 import MonsterManager from '../repository/MonsterManager';
 import Monster from '../repository/Monster';
+import MonsterCard from '../components/MonsterCard';
+import '../styles/Main.css';
 
 const Main = (): JSX.Element => {
   const [monsters, setMonsters] = useState<Monster[]>([]);
@@ -20,17 +14,14 @@ const Main = (): JSX.Element => {
   useEffect(() => {
     if (!monsterManagerRef.current) {
       monsterManagerRef.current = MonsterManager.getInstance();
-      console.log('single instance', monsterManagerRef.current);
       if (monsterManagerRef.current) {
         monsterManagerRef.current.subscribe(setMonsters);
         monsterManagerRef.current.addMonster({ name: 'Dragon', health: 100 });
         monsterManagerRef.current.addMonster({ name: 'Goblin', health: 30 });
       }
     }
-    console.log('single again:', monsterManagerRef.current);
 
     return () => {
-      console.log('useEffect return running');
       if (monsterManagerRef.current) {
         monsterManagerRef.current.unsubscribe(setMonsters);
       }
@@ -39,7 +30,6 @@ const Main = (): JSX.Element => {
 
   const addMonster = () => {
     if (monsterManagerRef.current && typeof health === 'number') {
-      console.log(`adding monster: ${name}`);
       monsterManagerRef.current.addMonster({ name, health });
     }
     setName('');
@@ -58,13 +48,22 @@ const Main = (): JSX.Element => {
       }}
     >
       <Typography variant="h2">Monster Manager</Typography>
-      <List>
+      <Grid container className="grid-container" justifyContent="center">
         {monsters.map((monster, index) => (
-          <ListItem key={index}>
-            {monster.name} - {monster.health} HP
-          </ListItem>
+          <Grid
+            item
+            xs={6}
+            key={index}
+            className="grid-item"
+            sx={{ display: 'flex', justifyContent: 'flex-start' }}
+          >
+            <MonsterCard
+              name={monster.name}
+              monsterManagerRef={monsterManagerRef}
+            />
+          </Grid>
         ))}
-      </List>
+      </Grid>
       <TextField
         label="Monster Name"
         variant="outlined"
