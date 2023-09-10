@@ -110,14 +110,16 @@ class MonsterManager {
     const monster = this.getMonster(name);
     if (monster) {
       const newHealth =
-        type === 'heal' ? monster.health + health : monster.health - health;
+        type === 'heal'
+          ? monster.health.val + health
+          : monster.health.val - health;
       if (newHealth <= 0) {
-        monster.health = 0;
+        monster.health.val = 0;
         monster.dead = true;
-      } else if (newHealth >= monster.maxHealth) {
-        monster.health = monster.maxHealth;
+      } else if (newHealth >= monster.health.max) {
+        monster.health.val = monster.health.max;
       } else {
-        monster.health = newHealth;
+        monster.health.val = newHealth;
       }
       this.notifyListeners();
     }

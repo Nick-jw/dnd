@@ -1,0 +1,22 @@
+/* Remove increment and decrement arrows for the number input */
+.number-input input::-webkit-outer-spin-button,
+.number-input input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+.number-input input {
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  appearance: textfield;
+  text-align: center;
+}
+
+.cancel-button {
+  background-color: rgb(128, 128, 128) !important;
+}
+
+.cancel-button:hover {
+  background-color: rgb(118, 118, 118) !important;
+}

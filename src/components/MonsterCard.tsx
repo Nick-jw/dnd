@@ -21,8 +21,8 @@ const MonsterCard = (props: MonsterCardProps): JSX.Element => {
   const monsterManager = useMonsterManager();
   const [healthInput, setHealthInput] = useState<number | null>(null);
 
-  const health = monsterManager.getMonster(name)?.health || 0;
-  const maxHealth = monsterManager.getMonster(name)?.maxHealth || 0;
+  const health = monsterManager.getMonster(name)?.health.val || 0;
+  const maxHealth = monsterManager.getMonster(name)?.health.max || 0;
   const conditions = monsterManager.getMonster(name)?.conditions || [];
 
   const handleHealthInputChange = (

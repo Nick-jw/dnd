@@ -1,0 +1,19 @@
+1. Add a 'subtitle' field to display in caption text next to monster name
+2. Change to give monsters all a unique ID, can be from static field in class
+- This means monsters can have duplicate names, migrate names to 'monster'
+- use new 'subtitle' field as unique name in play
+- Have caption field editable on the card
+
+3. Support multiple quantity monsters 
+- Aided by the ID system, as monsters can now just have the same name
+- Could be done just my looping i times through addMonster
+
+4. Add icon displays on card
+- should really be 1
+
+5. Support all health buttons
+- Kill should remove from card deck
+- Temp should set temp health
+- Health should be {val + temp / max}
+- If low, display current health as red
+- If has temp HP, display current health as green

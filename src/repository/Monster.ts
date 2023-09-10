@@ -1,47 +1,68 @@
 interface MonsterParams {
   name: string;
-  health: number;
+  health: string | number;
   maxHealth?: number;
+  tempHealth?: number;
   lowHealth?: boolean;
   dead?: boolean;
+  friendly?: boolean;
+  hidden?: boolean;
   advantaged?: boolean;
   disadvantaged?: boolean;
+  initiative?: number;
   conditions?: string[];
 }
 
-// Maybe make a health object, to save having to check for lowHealth
-// Constructor would still take raw values, but would contruct a health object and store as field
-// interface Health {
-//   health: number;
-//   tempHealth: number;
-//   maxHealth: number;
-//   low: boolean;
-// }
+interface Health {
+  val: number;
+  temp: number;
+  max: number;
+  low: boolean;
+}
 
 class Monster {
+  static defaultHealth: Health = {
+    val: 0,
+    temp: 0,
+    max: 0,
+    low: true,
+  };
+
   public name: string = 'defaultMonster';
-  public health: number = 1;
-  public maxHealth: number = this.health;
-  public lowHealth: boolean = false;
+  public health: Health = Monster.defaultHealth;
   public dead: boolean = false;
+  public friendly: boolean = false;
+  public hidden: boolean = false;
   public advantaged: boolean = false;
   public disadvantaged: boolean = false;
+  public initiative: number = 0;
   public conditions: string[] = [];
 
   constructor(params: MonsterParams) {
     Object.assign(this, params);
-    if (!params.maxHealth) {
-      this.maxHealth = this.health;
+    let healthVal = 0;
+    if (Number.isNaN(+params.health)) {
+      // call some helper function to calculate health number
+      healthVal = 1;
+    } else {
+      healthVal = params.health as number;
     }
-    this.lowHealth = this.health > this.maxHealth / 3;
+    const healthObj: Health = {
+      val: healthVal,
+      temp: params.tempHealth || 0,
+      max: params.maxHealth || healthVal,
+      low: false,
+    };
+    healthObj.low = healthObj.val < healthObj.max / 3;
+    this.health = healthObj;
   }
 
   public setHealth(value: number): void {
-    this.health = value;
+    this.health.val = value;
   }
 
   public getHealth(): number {
-    return this.health;
+    return this.health.val;
   }
 }
 
