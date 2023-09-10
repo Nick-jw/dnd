@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/dnd/static/css/main.e5d72b2a.css",
-    "main.js": "/dnd/static/js/main.ababbcf8.js",
+    "main.css": "/dnd/static/css/main.837ca1c1.css",
+    "main.js": "/dnd/static/js/main.61a8a8db.js",
     "static/js/787.fe6e4630.chunk.js": "/dnd/static/js/787.fe6e4630.chunk.js",
     "static/media/roboto-latin-500-normal.woff2": "/dnd/static/media/roboto-latin-500-normal.f25d774ecfe0996f8eb5.woff2",
     "static/media/roboto-latin-700-normal.woff2": "/dnd/static/media/roboto-latin-700-normal.227c93190fe7f82de3f8.woff2",
@@ -60,12 +60,12 @@
     "static/media/roboto-greek-ext-400-normal.woff": "/dnd/static/media/roboto-greek-ext-400-normal.f708607d2a7290fb8bfa.woff",
     "static/media/roboto-greek-ext-700-normal.woff": "/dnd/static/media/roboto-greek-ext-700-normal.249853776d22a271b2b5.woff",
     "index.html": "/dnd/index.html",
-    "main.e5d72b2a.css.map": "/dnd/static/css/main.e5d72b2a.css.map",
-    "main.ababbcf8.js.map": "/dnd/static/js/main.ababbcf8.js.map",
+    "main.837ca1c1.css.map": "/dnd/static/css/main.837ca1c1.css.map",
+    "main.61a8a8db.js.map": "/dnd/static/js/main.61a8a8db.js.map",
     "787.fe6e4630.chunk.js.map": "/dnd/static/js/787.fe6e4630.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.e5d72b2a.css",
-    "static/js/main.ababbcf8.js"
+    "static/css/main.837ca1c1.css",
+    "static/js/main.61a8a8db.js"
   ]
 }
