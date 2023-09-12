@@ -5,7 +5,9 @@ const Header = (): JSX.Element => {
     <Box component="header" sx={{ backgroundColor: 'lightGrey', mb: '20px' }}>
       <Typography variant="h2">Monsters</Typography>
       <Link
-        href="#"
+        href="https://www.youtube.com/watch?v=g8arEVfJoGc"
+        target="_blank"
+        rel="noopener noreferrer"
         underline="hover"
         sx={{
           fontSize: '0.8rem',
