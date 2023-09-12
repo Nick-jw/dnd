@@ -1,3 +1,5 @@
+import { calculateDiceValue } from '/Helpers.ts';
+
 interface MonsterParams {
   name: string;
   health: string | number;
