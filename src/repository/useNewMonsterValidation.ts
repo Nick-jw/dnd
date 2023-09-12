@@ -17,7 +17,7 @@ const useNewMonsterValidation = (
 
     // Health validation
     const regex = /^(\d+[dD](4|6|8|10|12|20))$/;
-    if (Number.isNaN(+monster.health)) {
+    if (Number.isNaN(+monster.health) || monster.health === '') {
       if (typeof monster.health === 'string' && !regex.test(monster.health)) {
         setError(true);
         setErrorMessage('Invalid health notation.');
@@ -52,7 +52,7 @@ const useNewMonsterValidation = (
       setErrorMessage('Cannot be both Advantaged and Disadvantaged.');
       return false;
     }
-
+    // initiative validation
     if (monster.initiative !== undefined) {
       if (monster.initiative < 1) {
         setError(true);

@@ -29,12 +29,25 @@ const Main = (): JSX.Element => {
     };
   }, [monsterManager]);
 
-  const addMonster = () => {
-    if (monsterManager && typeof health === 'number') {
-      monsterManager.addMonster({ name, health });
-    }
-    setName('');
-    setHealth(0);
+  const handleSort = (): void => {
+    monsterManager.sortMonsters();
+  };
+
+  const handleDownload = (): void => {
+    const fileName = `DND_Monsters_${new Date().toLocaleDateString()}`;
+    // Get Monster data
+    const _data = monsterManager.getMonsters();
+    const data = JSON.stringify(_data, null, 2);
+    // Create object for download
+    const blob = new Blob([data], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    // Create HTML tag to click and download
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${fileName}.txt`;
+    link.click();
+    // Clean up
+    URL.revokeObjectURL(url);
   };
 
   const handleOpen = () => setOpen(true);
@@ -48,10 +61,9 @@ const Main = (): JSX.Element => {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '100vh',
+        height: '100%',
       }}
     >
-      <Typography variant="h2">Monster Manager</Typography>
       <Grid container className="grid-container" justifyContent="center">
         {monsters.map((monster, index) => (
           <Grid
@@ -61,13 +73,43 @@ const Main = (): JSX.Element => {
             className="grid-item"
             sx={{ display: 'flex', justifyContent: 'flex-start' }}
           >
-            <MonsterCard name={monster.name} />
+            <MonsterCard id={monster.id} />
           </Grid>
         ))}
       </Grid>
       {/* Add Monster Button */}
-      <Button variant="contained" color="primary" onClick={handleOpen}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleOpen}
+        sx={{ mb: '10px ' }}
+      >
         Add Monster
+      </Button>
+      <Button
+        variant="outlined"
+        color="secondary"
+        style={{
+          backgroundColor: 'grey',
+          color: 'white',
+          borderColor: 'white',
+          marginBottom: '10px',
+        }}
+        onClick={handleSort}
+      >
+        Sort Monsters
+      </Button>
+      <Button
+        variant="outlined"
+        color="secondary"
+        style={{
+          backgroundColor: 'grey',
+          color: 'white',
+          borderColor: 'white',
+        }}
+        onClick={handleDownload}
+      >
+        Export Monsters
       </Button>
       {/* Modal */}
       <AddMonsterModal open={open} handleClose={handleClose} />

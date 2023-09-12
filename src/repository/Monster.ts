@@ -1,4 +1,4 @@
-import { calculateDiceValue } from '/Helpers.ts';
+import { calculateDiceValue } from './Helpers';
 
 interface MonsterParams {
   name: string;
@@ -29,7 +29,13 @@ class Monster {
     max: 0,
     low: true,
   };
+  static getNextId(): number {
+    Monster.id += 1;
+    return Monster.id;
+  }
+  static id: number = 0;
 
+  public id: number = Monster.getNextId();
   public name: string = 'defaultMonster';
   public health: Health = Monster.defaultHealth;
   public dead: boolean = false;
@@ -44,8 +50,7 @@ class Monster {
     Object.assign(this, params);
     let healthVal = 0;
     if (Number.isNaN(+params.health)) {
-      // call some helper function to calculate health number
-      healthVal = 1;
+      healthVal = calculateDiceValue(params.health as string);
     } else {
       healthVal = params.health as number;
     }

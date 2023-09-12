@@ -40,6 +40,7 @@ module.exports = {
       'no-plusplus': 'off',
       'no-restricted-syntax': 'off',
       'react/no-array-index-key': 'off',
+      'no-underscore-dangle': 'off',
       '@typescript-eslint/typedef': ['warn', {
         "arrowParameter": false,
         "variableDeclaration": false,

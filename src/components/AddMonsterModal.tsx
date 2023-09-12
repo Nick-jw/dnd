@@ -47,7 +47,7 @@ const AddMonsterModal = ({ open, handleClose }: Props): JSX.Element => {
 
   const monsterManager = useMonsterManager();
   const createMonsterCallback = (monster: MonsterParams) => {
-    monsterManager.addMonster(monster);
+    monsterManager.addMonster(monster, (quantity as number) || 1);
   };
   const [validate, error, errorMessage] = useNewMonsterValidation(
     createMonsterCallback,
@@ -112,7 +112,6 @@ const AddMonsterModal = ({ open, handleClose }: Props): JSX.Element => {
   };
 
   const handleSubmit = () => {
-    console.log('submitting');
     const monster = {
       name,
       health,
