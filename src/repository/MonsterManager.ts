@@ -59,14 +59,20 @@ class MonsterManager {
   public addMonster(params: MonsterParams, quantity: number = 1): void {
     if (quantity > 1) {
       for (let i = 1; i <= quantity; ++i) {
+        const initiative = Math.floor(Math.random() * 20) + 1;
         const name = `${params.name} ${i}`;
-        const currMonster: Monster = new Monster({ ...params, name });
+        const currMonster: Monster = new Monster({
+          ...params,
+          name,
+          initiative,
+        });
         this.monsters.push(currMonster);
       }
     } else {
       const currMonster: Monster = new Monster(params);
       this.monsters.push(currMonster);
     }
+    this.sortMonsters();
     this.notifyListeners();
   }
 
@@ -157,6 +163,18 @@ class MonsterManager {
       return true;
     }
     return false;
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public importMonsters(data: any): void {
+    try {
+      this.monsters = data;
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('[MonsterManager] Error importing monsters');
+      // eslint-disable-next-line no-console
+      console.error(err);
+    }
+    this.notifyListeners();
   }
 
   public clearAllMonsters(): void {

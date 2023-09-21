@@ -86,7 +86,7 @@ const AddMonsterModal = ({ open, handleClose }: Props): JSX.Element => {
       return;
     }
     // Regex for strings in the format "XdY", with the trailing number being optional
-    const regex = /^(\d+[dD](1|2|4|6|8|10|12|20)?)$/;
+    const regex = /^(\d+[dD](1|2|4|6|8|10|12|20)?)(\+|\+\d+)?$/;
     // Set state if string matches regex pattern
     if (regex.test(value)) {
       setHealth(value);

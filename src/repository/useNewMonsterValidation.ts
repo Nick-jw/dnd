@@ -16,7 +16,7 @@ const useNewMonsterValidation = (
     }
 
     // Health validation
-    const regex = /^(\d+[dD](4|6|8|10|12|20))$/;
+    const regex = /^(\d+[dD](1|2|4|6|8|10|12|20)?)(\+|\+\d+)?$/;
     if (Number.isNaN(+monster.health) || monster.health === '') {
       if (typeof monster.health === 'string' && !regex.test(monster.health)) {
         setError(true);

@@ -1,5 +1,5 @@
-import { Typography, Button, Container, Grid } from '@mui/material';
-import { useState, useEffect } from 'react';
+import { Button, Container, Grid, Box } from '@mui/material';
+import { useState, useEffect, ChangeEvent } from 'react';
 import { useMonsterManager } from '../context/MonsterManagerContext';
 import Monster from '../repository/Monster';
 import MonsterCard from '../components/MonsterCard';
@@ -9,8 +9,6 @@ import '../styles/Main.css';
 const Main = (): JSX.Element => {
   const monsterManager = useMonsterManager();
   const [monsters, setMonsters] = useState<Monster[]>([]);
-  const [name, setName] = useState<string>('');
-  const [health, setHealth] = useState<number | string>(0);
   const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -28,6 +26,10 @@ const Main = (): JSX.Element => {
       }
     };
   }, [monsterManager]);
+
+  const handleClear = (): void => {
+    monsterManager.clearAllMonsters();
+  };
 
   const handleSort = (): void => {
     monsterManager.sortMonsters();
@@ -48,6 +50,25 @@ const Main = (): JSX.Element => {
     link.click();
     // Clean up
     URL.revokeObjectURL(url);
+  };
+
+  const handleImport = (e: ChangeEvent<HTMLInputElement>): void => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const rawData = event.target?.result as string;
+      const data = JSON.parse(rawData);
+      monsterManager.importMonsters(data);
+    };
+    reader.onerror = (error) => {
+      // eslint-disable-next-line no-console
+      console.error('Error importing monsters: ', error);
+    };
+    reader.readAsText(file);
+    // Clear input to disable file caching
+    e.target.value = '';
   };
 
   const handleOpen = () => setOpen(true);
@@ -86,31 +107,71 @@ const Main = (): JSX.Element => {
       >
         Add Monster
       </Button>
-      <Button
-        variant="outlined"
-        color="secondary"
-        style={{
-          backgroundColor: 'grey',
-          color: 'white',
-          borderColor: 'white',
-          marginBottom: '10px',
-        }}
-        onClick={handleSort}
-      >
-        Sort Monsters
-      </Button>
-      <Button
-        variant="outlined"
-        color="secondary"
-        style={{
-          backgroundColor: 'grey',
-          color: 'white',
-          borderColor: 'white',
-        }}
-        onClick={handleDownload}
-      >
-        Export Monsters
-      </Button>
+      <Box display="flex" justifyContent="space-between">
+        <Button
+          variant="outlined"
+          color="secondary"
+          style={{
+            backgroundColor: 'grey',
+            color: 'white',
+            borderColor: 'white',
+          }}
+          onClick={handleClear}
+        >
+          Clear
+        </Button>
+        <Button
+          variant="outlined"
+          color="secondary"
+          style={{
+            backgroundColor: 'grey',
+            color: 'white',
+            borderColor: 'white',
+          }}
+          onClick={handleSort}
+        >
+          Sort
+        </Button>
+
+        {/* Import Monsters */}
+        <input
+          accept=".txt"
+          style={{ display: 'none' }}
+          id="contained-button-file"
+          multiple
+          type="file"
+          onChange={handleImport}
+        />
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+        <label htmlFor="contained-button-file">
+          <Button
+            variant="outlined"
+            color="secondary"
+            style={{
+              backgroundColor: 'grey',
+              color: 'white',
+              borderColor: 'white',
+            }}
+            component="span"
+          >
+            Import
+          </Button>
+        </label>
+
+        {/* Export Monsters */}
+        <Button
+          variant="outlined"
+          color="secondary"
+          style={{
+            backgroundColor: 'grey',
+            color: 'white',
+            borderColor: 'white',
+          }}
+          onClick={handleDownload}
+        >
+          Export
+        </Button>
+      </Box>
       {/* Modal */}
       <AddMonsterModal open={open} handleClose={handleClose} />
     </Container>
