@@ -45,6 +45,7 @@ class Monster {
   public disadvantaged: boolean = false;
   public initiative: number = 0;
   public conditions: string[] = [];
+  public notes: string = '';
 
   constructor(params: MonsterParams) {
     Object.assign(this, params);

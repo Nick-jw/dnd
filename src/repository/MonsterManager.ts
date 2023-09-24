@@ -136,6 +136,26 @@ class MonsterManager {
     return 0;
   }
 
+  public getNotes(id: number): string {
+    const currMonster = this.getMonster(id);
+    if (currMonster) {
+      return currMonster.notes;
+    }
+    // eslint-disable-next-line no-console
+    console.error('[MonsterManager] getNotes invalid ID');
+    return '';
+  }
+
+  public updateNotes(id: number, notes: string): void {
+    const currMonster = this.getMonster(id);
+    if (currMonster) {
+      currMonster.notes = notes;
+      this.notifyListeners();
+    }
+    console.log('updated notes with:');
+    console.log(notes);
+  }
+
   public sortMonsters(): void {
     this.monsters = this.monsters.sort((a, b) => {
       return b.initiative - a.initiative;

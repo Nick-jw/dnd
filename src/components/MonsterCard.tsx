@@ -9,7 +9,7 @@ import {
   IconButton,
 } from '@mui/material';
 import { green, grey, yellow } from '@mui/material/colors';
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faSkull,
@@ -18,6 +18,7 @@ import {
   faAnglesUp,
   faAnglesDown,
 } from '@fortawesome/free-solid-svg-icons';
+import { debounce } from 'lodash';
 import { useMonsterManager } from '../context/MonsterManagerContext';
 import '../styles/MonsterCard.css';
 
@@ -33,13 +34,14 @@ const MonsterCard = (props: MonsterCardProps): JSX.Element => {
   const maxHealth = monsterManager.getMonster(id)?.health.max || 0;
   const { _dead, _friendly, _hidden } = monsterManager.getStatuses(id);
   const _advantagedStatus = monsterManager.getAdvantageStatus(id);
-  const conditions = monsterManager.getMonster(id)?.conditions || [];
+  const _notes = monsterManager.getNotes(id);
   const initiative = monsterManager.getInitiative(id);
 
   const [healthInput, setHealthInput] = useState<number | null>(null);
   const [isDead, setIsDead] = useState<boolean>(_dead);
   const [isFriendly, setIsFriendly] = useState<boolean>(_friendly);
   const [isHidden, setIsHidden] = useState<boolean>(_hidden);
+  const [notes, setNotes] = useState<string>(_notes);
   const [advantagedStatus, setAdvantagedStatus] = useState<
     'adv' | 'dis' | 'none'
   >(_advantagedStatus);
@@ -78,6 +80,19 @@ const MonsterCard = (props: MonsterCardProps): JSX.Element => {
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedNotesUpdate = useCallback(
+    debounce((monsterId: number, noteValue: string) => {
+      monsterManager?.updateNotes(monsterId, noteValue);
+    }, 500),
+    [],
+  );
+
+  const updateNotes = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setNotes(event.target.value);
+    debouncedNotesUpdate(id, event.target.value);
+  };
+
   return (
     <Card sx={{ marginBottom: '1rem', width: '100%' }}>
       <CardContent className="monster-card-content">
@@ -106,12 +121,11 @@ const MonsterCard = (props: MonsterCardProps): JSX.Element => {
             <Typography variant="body2" color="textSecondary">
               Initiative: <strong>{initiative}</strong>
             </Typography>
-            {/* <Typography variant="body2" color="textSecondary">
-              Conditions: <strong>{conditions.join(', ')}</strong>
-            </Typography> */}
             <TextField
               variant="outlined"
               multiline
+              value={notes}
+              onChange={updateNotes}
               rows={1}
               placeholder="Notes..."
               sx={{
