@@ -31,11 +31,14 @@ const MonsterCard = (props: MonsterCardProps): JSX.Element => {
   const monsterManager = useMonsterManager();
   const name = monsterManager.getName(id);
   const health = monsterManager.getMonster(id)?.health.val || 0;
+  const tempHealth = monsterManager.getMonster(id)?.health.temp || 0;
   const maxHealth = monsterManager.getMonster(id)?.health.max || 0;
   const { _dead, _friendly, _hidden } = monsterManager.getStatuses(id);
   const _advantagedStatus = monsterManager.getAdvantageStatus(id);
   const _notes = monsterManager.getNotes(id);
   const initiative = monsterManager.getInitiative(id);
+
+  const isLowHealth = health <= maxHealth / 4;
 
   const [healthInput, setHealthInput] = useState<number | null>(null);
   const [isDead, setIsDead] = useState<boolean>(_dead);
@@ -56,6 +59,13 @@ const MonsterCard = (props: MonsterCardProps): JSX.Element => {
   const handleHealButton = (): void => {
     if (healthInput !== null) {
       monsterManager?.applyHealthDelta(id, healthInput, 'heal');
+      setHealthInput(null);
+    }
+  };
+
+  const handleTempHealthButton = (): void => {
+    if (healthInput !== null) {
+      monsterManager?.applyTempHealth(id, healthInput);
       setHealthInput(null);
     }
   };
@@ -93,6 +103,19 @@ const MonsterCard = (props: MonsterCardProps): JSX.Element => {
     debouncedNotesUpdate(id, event.target.value);
   };
 
+  const getHealthColour = (): string => {
+    if (isDead) {
+      return 'red';
+    }
+    if (tempHealth > 0) {
+      return 'green';
+    }
+    if (isLowHealth) {
+      return 'orange';
+    }
+    return 'grey';
+  };
+
   return (
     <Card sx={{ marginBottom: '1rem', width: '100%' }}>
       <CardContent className="monster-card-content">
@@ -115,8 +138,8 @@ const MonsterCard = (props: MonsterCardProps): JSX.Element => {
             }}
           >
             <Typography variant="h6">{name}</Typography>
-            <Typography variant="body2" color="textSecondary">
-              Health: <strong>{`${health}/${maxHealth}`}</strong>
+            <Typography variant="body2" sx={{ color: getHealthColour() }}>
+              Health: <strong>{`${health + tempHealth}/${maxHealth}`}</strong>
             </Typography>
             <Typography variant="body2" color="textSecondary">
               Initiative: <strong>{initiative}</strong>
@@ -219,6 +242,7 @@ const MonsterCard = (props: MonsterCardProps): JSX.Element => {
               <Button
                 variant="outlined"
                 size="small"
+                onClick={handleTempHealthButton}
                 sx={{ width: 64, color: green.A700 }}
                 className="health-button"
               >

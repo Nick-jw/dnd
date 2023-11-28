@@ -152,8 +152,6 @@ class MonsterManager {
       currMonster.notes = notes;
       this.notifyListeners();
     }
-    console.log('updated notes with:');
-    console.log(notes);
   }
 
   public sortMonsters(): void {
@@ -204,25 +202,41 @@ class MonsterManager {
 
   public applyHealthDelta(
     id: number,
-    health: number,
+    delta: number,
     type: 'heal' | 'damage',
   ): void {
     const monster = this.getMonster(id);
     if (monster) {
-      const newHealth =
-        type === 'heal'
-          ? monster.health.val + health
-          : monster.health.val - health;
-      if (newHealth <= 0) {
-        monster.health.val = 0;
+      if (type === 'heal') {
+        const newHealth = monster.health.val + delta;
+        monster.health.val =
+          newHealth > monster.health.max ? monster.health.max : newHealth;
+      } else if (type === 'damage' && monster.health.temp === 0) {
+        const newHealth = monster.health.val - delta;
+        monster.health.val = newHealth <= 0 ? 0 : newHealth;
+      } else if (type === 'damage' && monster.health.temp > 0) {
+        const newTempHealth = monster.health.temp - delta;
+        if (newTempHealth < 0) {
+          monster.health.val += newTempHealth;
+          monster.health.temp = 0;
+        } else {
+          monster.health.temp = newTempHealth;
+        }
+      }
+
+      if (monster.health.val === 0 && monster.health.temp === 0) {
         monster.dead = true;
-      } else if (newHealth >= monster.health.max) {
-        monster.health.val = monster.health.max;
-      } else {
-        monster.health.val = newHealth;
       }
       this.notifyListeners();
     }
+  }
+
+  public applyTempHealth(id: number, health: number): void {
+    const monster = this.getMonster(id);
+    if (monster) {
+      monster.health.temp += health;
+    }
+    this.notifyListeners();
   }
 }
 
